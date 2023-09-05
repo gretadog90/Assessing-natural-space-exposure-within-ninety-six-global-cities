@@ -1,0 +1,132 @@
+/*
+
+
+100m resolution maps of % green area and % green/blue area
+  for C40 cities 
+  
+https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v100#bands
+// 10	006400	Trees
+// 20	ffbb22	Shrubland
+// 30	ffff4c	Grassland
+// 40	f096ff	Cropland
+// 50	fa0000	Built-up
+// 60	b4b4b4	Barren / sparse vegetation
+// 70	f0f0f0	Snow and ice
+// 80	0064c8	Open water
+// 90	0096a0	Herbaceous wetland
+// 95	00cf75	Mangroves
+// 100	fae6a0	Moss and lichen
+  
+*/
+
+//////////////////////////////////////////////////////////////
+// Asset List
+//////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////
+// CHANGE THIS PART IF TESTING V RUNNING FOR ALL CITIES
+//////////////////////////////////////////////////////////////
+
+var c40_cities = ee.FeatureCollection("users/gretam/c40_cities");
+//var c40_cities = ee.FeatureCollection("users/gretam/sample_cities");
+
+//one city for testing purposes
+var nola = c40_cities
+    .filter(ee.Filter.equals('City', 'New Orleans'))
+Map.centerObject(nola)
+
+// load in image collection of 2020 10m ESA landcover dataset
+var landcover=ee.ImageCollection("ESA/WorldCover/v100").first();
+
+//////////////////////////////////////////////////////////////
+// Make green and green/blue binary vars
+//////////////////////////////////////////////////////////////
+// Remap values. fewer non natural classifications so set these to 0
+var bluegreen = landcover
+      .where(landcover.eq(0), 0) //unknown
+      .where(landcover.eq(50), 0) //urban
+      .where(landcover.eq(60), 0) //bare/sparse veg
+      .where(landcover.eq(70), 0); //snow/ice
+
+//make binary by turning all non zero values to 1      
+var gba = bluegreen.gt(0);
+
+//make sure it looks right-- white should appear otherwise non gba is null not 0
+Map.addLayer({
+  visParams: {palette: ['white', 'blue']},
+  eeObject: gba
+});
+
+//mask water for just green area 
+var landMask=landcover.neq(80); // 80=open water
+var ga=gba.updateMask(landMask);
+
+//make sure it looks right-- white should appear otherwise non gba is null not 0
+Map.addLayer({
+  visParams: {palette: ['white', 'green']},
+  eeObject: ga
+});
+
+//////////////////////////////////////////////////////////////
+// Iteration over shapefiles 
+//////////////////////////////////////////////////////////////
+// iterate over the cities to create separate maps
+c40_cities.aggregate_array('City').evaluate(function (names) {
+  names.map(function (name) {
+    var city = c40_cities
+      .filter(ee.Filter.equals('City', name))
+      .first()
+    //create one set up for shape file itself 
+    var city_shape=city.geometry()
+    cityClip(city_shape, name)
+  })
+})
+
+function cityClip(city_shape, name) {
+  //first clip to city 
+  var ga_clipped=ga.clip(city_shape);
+  var gba_clipped=gba.clip(city_shape);
+
+  //////////////////////////////////////////////////////////////
+  // Reduce res to 100m
+  //////////////////////////////////////////////////////////////
+  var ga_100 = ga_clipped
+    // Force the next reprojection to aggregate instead of resampling.
+    .reduceResolution({
+      reducer: ee.Reducer.mean(),
+      maxPixels: 1024
+    })
+    .reproject({
+      crs: 'EPSG:4326',
+      scale: 100
+    });
+    
+  var gba_100 = gba_clipped
+    // Force the next reprojection to aggregate instead of resampling.
+    .reduceResolution({
+      reducer: ee.Reducer.mean(),
+      maxPixels: 1024
+    })
+    .reproject({
+      crs: 'EPSG:4326',
+      scale: 100
+    });
+
+  // Export green area
+  Export.image.toDrive({
+    folder: 't1_ga',
+    image: ga_100,
+    description:name,
+    region: city_shape,
+    scale:100
+  });
+ 
+  // Export green/blue area
+  Export.image.toDrive({
+    folder: 't1_gba',
+    image: gba_100,
+    description:name,
+    region: city_shape,
+    scale:100
+  });
+}
