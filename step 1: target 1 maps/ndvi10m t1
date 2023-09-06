@@ -1,0 +1,151 @@
+/*
+
+Create 100m ndvi maps for each C40 city using:
+  - Sentinel 2 10m data to calculate NDVI &
+  - ESA 10m landcover data identify & mask water
+  
+*/
+
+//////////////////////////////////////////////////////////////
+// City List
+//////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////
+// CHANGE THIS PART IF TESTING V RUNNING FOR ALL CITIES
+//////////////////////////////////////////////////////////////
+
+//c40 urban centres database shapefiles
+var c40_cities=ee.FeatureCollection("users/gretam/c40_cities");
+
+// subset of 12 cities (representing all regions) for testing
+//var c40_cities = ee.FeatureCollection("users/gretam/sample_cities");
+
+// one city (in sample) for testing of code
+var paris = c40_cities
+    .filter(ee.Filter.equals('City', 'Paris'));
+    
+//////////////////////////////////////////////////////////////
+// Satellite data for identifying natural space
+//////////////////////////////////////////////////////////////
+// sentinel 2 10m data
+// select all images from 2020 and bands B4=Red, B8=NIR to calculate NDVI 
+//(greenest pixel will remove cloudy pixels)
+var s2a=ee.ImageCollection("COPERNICUS/S2_SR")
+  .filterDate('2020-01-01', '2020-12-31') 
+  .select('B4','B8'); 
+
+// ESA landcover 2020 10m data 
+var landcover=ee.ImageCollection("ESA/WorldCover/v100")
+  .first();
+  
+//////////////////////////////////////////////////////////////
+// Iteration over shapefiles 
+//////////////////////////////////////////////////////////////
+// iterate over the cities to create separate maps
+c40_cities.aggregate_array('City').evaluate(function(names) {
+  names.map(function (name) {
+    var city = c40_cities
+      .filter(ee.Filter.equals('City', name))
+      .first();
+    //create one set up for shape file itself 
+    var city_shape=city.geometry();
+    cityClip(city_shape, name);
+  });
+});
+
+function cityClip(city_shape, name) {  
+  
+  //////////////////////////////////////////////////////////////
+  // Data manipulation
+  //////////////////////////////////////////////////////////////
+  // clip 2020 cloudless sentinel images to city shape file
+  var sentinel=s2a.filterBounds(city_shape);
+  var projection=ee.Image(sentinel.first()).projection();
+
+  // create a function to calculate NDVI for all images left in the 
+  // image collection 
+  
+  // function to calculate NDVI in Sentinel 2
+  var addNDVI = function(image) {
+    var NDVI = image.normalizedDifference(['B8', 'B4'])
+    .rename('NDVI');
+    return image.addBands(NDVI);
+  };
+  
+  // create image collection of NDVI values
+  var withNDVI = sentinel.map(addNDVI).select('NDVI');
+  
+  // reduce to one image (greenest pixel composite)
+  var greenestPixel = withNDVI.qualityMosaic('NDVI');
+  
+  // define water
+  var water=landcover.eq(80).or(greenestPixel.lte(0));
+  
+  // override NDVI to be 1 where landcover map indicates water
+  var mndvi10m= greenestPixel.where(water.eq(1),1).clip(city_shape).setDefaultProjection(projection);
+  
+  // map it to make sure it looks good
+  Map.centerObject(city_shape);
+  Map.addLayer(mndvi10m, {
+    bands: 'NDVI',
+    min: 0.0,
+    max: 1.0,
+    palette: [
+      'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+      '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+      '012E01', '011D01', '011301'
+  ]});
+  
+  //get a just green image that ignores water (landcover=open water OR NDVI<0)
+  var ndvi10m= greenestPixel.updateMask(water.eq(0)).clip(city_shape).setDefaultProjection(projection);
+
+  Map.addLayer(ndvi10m, {
+    bands: 'NDVI',
+    min: 0.0,
+    max: 1.0,
+    palette: [
+      'FFFFFF', 'CE7E45', 'DF923D', 'F1B555', 'FCD163', '99B718', '74A901',
+      '66A000', '529400', '3E8601', '207401', '056201', '004C00', '023B01',
+      '012E01', '011D01', '011301'
+  ]});
+  
+  var ndvi100 = ndvi10m
+    // Force the next reprojection to aggregate instead of resampling.
+    .reduceResolution({
+      reducer: ee.Reducer.mean(),
+      maxPixels: 1024
+    })
+    .reproject({
+      crs: 'EPSG:4326',
+      scale: 100
+    });
+  
+  var mndvi100 = mndvi10m
+     // Force the next reprojection to aggregate instead of resampling.
+    .reduceResolution({
+      reducer: ee.Reducer.mean(),
+      maxPixels: 1024
+    })
+    .reproject({
+      crs: 'EPSG:4326',
+      scale: 100
+    });
+  
+  // Export ndvi 
+  Export.image.toDrive({
+    image: ndvi100,
+    folder: 't1_ndvi',
+    description:name,
+    region: city_shape,
+    scale:100
+  });
+  
+  // Export mndvi
+  Export.image.toDrive({
+    image: mndvi100,
+    folder: 't1_mndvi',
+    description:name,
+    region: city_shape,
+    scale:100
+  });
+} 
