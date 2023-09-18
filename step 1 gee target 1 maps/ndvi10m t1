@@ -10,20 +10,21 @@ Create 100m ndvi maps for each C40 city using:
 // City List
 //////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////////////
-// CHANGE THIS PART IF TESTING V RUNNING FOR ALL CITIES
-//////////////////////////////////////////////////////////////
-
+////////////////  FULL RUN MAIN ANALYSIS   ///////////////////
 //c40 urban centres database shapefiles
 var c40_cities=ee.FeatureCollection("users/gretam/c40_cities");
 
-// subset of 12 cities (representing all regions) for testing
+//////////////  FULL RUN SENSITVITY ANALYSIS /////////////////
+//c40 self-defined shapefiles
+//var c40_cities = ee.FeatureCollection("users/gretam/c40_list_selfdefined");
+
+////////////////  SAMPLE RUN (12 cities)   ///////////////////
 //var c40_cities = ee.FeatureCollection("users/gretam/sample_cities");
 
 // one city (in sample) for testing of code
 var paris = c40_cities
     .filter(ee.Filter.equals('City', 'Paris'));
-    
+
 //////////////////////////////////////////////////////////////
 // Satellite data for identifying natural space
 //////////////////////////////////////////////////////////////
@@ -113,7 +114,7 @@ function cityClip(city_shape, name) {
     // Force the next reprojection to aggregate instead of resampling.
     .reduceResolution({
       reducer: ee.Reducer.mean(),
-      maxPixels: 1024
+      maxPixels: 65535 // had to up for Tokyo c40 bounds
     })
     .reproject({
       crs: 'EPSG:4326',
@@ -124,7 +125,7 @@ function cityClip(city_shape, name) {
      // Force the next reprojection to aggregate instead of resampling.
     .reduceResolution({
       reducer: ee.Reducer.mean(),
-      maxPixels: 1024
+      maxPixels: 65535 // had to up for Tokyo c40 bounds
     })
     .reproject({
       crs: 'EPSG:4326',
@@ -137,7 +138,8 @@ function cityClip(city_shape, name) {
     folder: 't1_ndvi',
     description:name,
     region: city_shape,
-    scale:100
+    scale:100,
+    maxPixels: 1E10 
   });
   
   // Export mndvi
@@ -146,6 +148,7 @@ function cityClip(city_shape, name) {
     folder: 't1_mndvi',
     description:name,
     region: city_shape,
-    scale:100
+    scale:100,
+    maxPixels: 1E10 
   });
 } 

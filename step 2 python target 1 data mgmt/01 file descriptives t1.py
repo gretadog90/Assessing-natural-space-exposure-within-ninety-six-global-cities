@@ -20,7 +20,10 @@ import os
 #%% user inputs - #%% is how you section off code blocks in spyder
 # data root folder path
 prj_folder = '/Users/gretam/Documents/'
-data_folder = '/Users/gretam/Documents/data/ucdb/'
+
+#switch this to run sensitivity analysis on c40 self-defined shapefiles
+shapefile_type='ucdb/' #'c40/'
+data_folder = '/Users/gretam/Documents/data/'+shapefile_type
 
 ndvi_path=data_folder+'t1_ndvi/'
 ga_path=data_folder+'t1_ga/'

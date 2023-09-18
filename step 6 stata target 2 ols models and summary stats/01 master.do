@@ -1,6 +1,5 @@
 /*
 
-File to run all other files. 
 Set up file paths and globals to be used throughout.
 
 */
@@ -8,10 +7,10 @@ Set up file paths and globals to be used throughout.
 set more off
 
 *choose whether ot run on ucdb or c40 self defined shape files
-global cityBounds "ucdb" // "c40" //
+global cityBounds "c40" //"ucdb" 
 
 *file paths
-global importDir "/Users/gretam/Documents/data/$cityBounds/t1_output/"
+global importDir "/Users/gretam/Documents/data/$cityBounds/"
 global projectDir "/Users/gretam/Documents/Stata/"
 cd $projectDir
 
@@ -32,4 +31,3 @@ assert `num' == 96
 global cityCount=`num'
 
 global ns_metrics ndvi mndvi ga gba
-

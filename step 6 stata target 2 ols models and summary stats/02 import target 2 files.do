@@ -21,6 +21,6 @@ foreach city in $c40_cities {
 	gen city="`city'"
 	
 	*save to temp
-	save "tmp/`city'_target2.dta", replace
+	save "tmp_$cityBounds/`city'_target2.dta", replace
 }
 
