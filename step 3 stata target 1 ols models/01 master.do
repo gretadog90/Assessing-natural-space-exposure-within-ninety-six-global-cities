@@ -8,7 +8,7 @@ Set up file paths and globals to be used throughout.
 set more off
 
 *choose whether ot run on ucdb or c40 self defined shape files
-global cityBounds "c40" //"ucdb" 
+global cityBounds "ucdb" //"c40"
 
 *file paths
 global importDir "/Users/gretam/Documents/data/$cityBounds/"

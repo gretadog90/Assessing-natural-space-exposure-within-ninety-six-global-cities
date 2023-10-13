@@ -31,6 +31,7 @@ pop_path=data_folder+'t2_population/adult pop/'
 globals()['c40_list']= [os.path.splitext(i)[0] for i in os.listdir(gba_path)  if not i.startswith('.')]
 print(len(c40_list))
 print(c40_list)
+c40_list=["Toronto"]
 
 #%% turn dictionaries into data frames for easier manipulation-- and export as excel sheet
 # defining the variables

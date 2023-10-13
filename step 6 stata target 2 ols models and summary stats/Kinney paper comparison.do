@@ -32,7 +32,7 @@ replace city="Washington DC" if city=="Washington D.C." //Washington D.C.
 //Venice
 //Yokohama
 
-merge 1:1 city using "output ucdb/city_summary_t1.dta", keep(2 3)
+merge 1:1 city using "output_ucdb/city_summary_t1.dta", keep(2 3)
 
 corr peak_ndvi_2020 ndvi_mean
 

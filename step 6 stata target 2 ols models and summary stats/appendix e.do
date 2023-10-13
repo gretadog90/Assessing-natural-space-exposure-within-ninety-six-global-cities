@@ -1,29 +1,20 @@
-keep city p_ndvi_ols_30 p_ndvi_ols_40 p_ndvi_rols_30 p_ndvi_rols_40 p_ndvi_ols_70 p_ndvi_rols_70
+import delimited using "output_c40/appendixB.csv", clear
+keep t1_p_ndvi_30 t2_p_mndvi_70 city
+rename (t1_p_ndvi_30 t2_p_mndvi_70) (t1_p_ndvi_30_c40 t2_p_mndvi_70_c40)
 
-rename p_* *_c40
+** pull in c40 data
+merge 1:1 city using "output_c40/city_summary_t1.dta"
+rename (ndvi_N mndvi_N) (ndvi_n_c40 mndvi_n_c40)
 
-merge 1:1 city using "output/city_summary_t1.dta", keepusing(ndvi_n mndvi_n) assert(3) nogen
-
-rename (ndvi_n mndvi_n) (ndvi_n_c40 mndvi_n_c40)
-
-save "output/appendixE.dta", replace
-
-import delimited using "output ucdb/appendixA.csv" , varnames(1) clear
-drop in 1 // these are the variable descriptions
-keep city country region p_ndvi_ols_30 p_ndvi_ols_40 p_ndvi_rols_30 p_ndvi_rols_40 p_ndvi_ols_70 p_ndvi_rols_70
-destring p_*, replace
-
-merge 1:1 city using "output ucdb/city_summary_t1.dta", keepusing(ndvi_N mndvi_N) assert(3) nogen
-
+merge 1:1 city using "output_ucdb/city_summary_t1.dta", keepusing(ndvi_N mndvi_N) nogen
 rename (ndvi_N mndvi_N) (ndvi_n_ucdb mndvi_n_ucdb)
-
-merge 1:1 city using "output/appendixE.dta", assert(3) nogen
 
 gen ucdb_bigger_t1=(ndvi_n_ucdb>ndvi_n_c40)
 gen ucdb_bigger_t2=(mndvi_n_ucdb>mndvi_n_c40)
 
+merge 1:1 city using "output_ucdb/appendixA.dta", keepusing(t1_p_ndvi_30 t2_p_mndvi_70) nogen
+rename (t1_p_ndvi_30 t2_p_mndvi_70) (t1_p_ndvi_30_ucdb t2_p_mndvi_70_ucdb)
+
  
-
-save "output/appendixE.dta", replace
-
-export delimited using "output/appendixE.csv", replace
+save "output_ucdb/appendixE.dta", replace
+outsheet using "output_ucdb/appendixE.csv" , comma replace

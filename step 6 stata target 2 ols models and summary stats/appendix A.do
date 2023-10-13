@@ -93,6 +93,8 @@ use "output_ucdb/appendixA.dta", clear
 
 
 **TAB 4: model 1 results **
+
+summ t1_adjr2 t1_rmse
 ***** PARAGRAPH 2 *****
 import delimited using "output ucdb/appendixA.csv" , varnames(1) clear
 drop in 1 // these are the variable descriptions

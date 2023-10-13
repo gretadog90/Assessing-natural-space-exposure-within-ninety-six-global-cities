@@ -2,8 +2,8 @@
 **** PARAGRAPH 1 *******
 
 *get city and regional summary stats on ns metrics
-use "output ucdb/city_summary_t1.dta", clear
-merge 1:1 city using "tmp/c40citylist.dta", assert(3) nogen
+use "output_ucdb/city_summary_t1.dta", clear
+merge 1:1 city using "tmp_ucdb/c40citylist.dta", assert(3) nogen
 
 summ ndvi_mean ndvi_min ndvi_max ga_mean ga_min ga_max mndvi_mean mndvi_min ///
 	mndvi_max gba_mean gba_min gba_max 

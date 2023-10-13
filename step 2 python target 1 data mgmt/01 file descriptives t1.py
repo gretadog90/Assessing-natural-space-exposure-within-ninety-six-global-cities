@@ -22,13 +22,13 @@ import os
 prj_folder = '/Users/gretam/Documents/'
 
 #switch this to run sensitivity analysis on c40 self-defined shapefiles
-shapefile_type='ucdb/' #'c40/'
+shapefile_type='c40/' #'c40/'
 data_folder = '/Users/gretam/Documents/data/'+shapefile_type
 
-ndvi_path=data_folder+'t1_ndvi/'
+ndvi_path=data_folder+'t1_ndvi_update/'
 ga_path=data_folder+'t1_ga/'
 
-mndvi_path=data_folder+'t1_mndvi/'
+mndvi_path=data_folder+'t1_mndvi_update/'
 gba_path=data_folder+'t1_gba/'
 
 output=data_folder+'t1_output/'
@@ -37,6 +37,7 @@ output=data_folder+'t1_output/'
 globals()['c40_list']= [os.path.splitext(i)[0] for i in os.listdir(ndvi_path)  if not i.startswith('.')]
 print(len(c40_list))
 print(c40_list)
+c40_list=['Toronto']
 
 #%% load data and just do some basic checks that info is as we expect and that 
 # all the data sets for each city share the same shape, resolution, bounds, etc.ß
@@ -150,4 +151,4 @@ for city in c40_list:
     
     #save city excel file with just the rows that have data
     merged_subset = merged_df.dropna(subset=['ndvi', 'ga', 'gba', 'mndvi'], how='all')
-    merged_subset.to_csv(output+city+'.csv')
+    merged_subset.to_csv(output+city+'update.csv')
