@@ -139,11 +139,11 @@ for n, city in enumerate(cities_cea):
     ax.set_title(city, fontsize=25, weight='bold')
     ax.tick_params(axis='x', labelsize=15)
     ax.tick_params(axis='y', labelsize=15)
-    if city=="Durban eThekwini":
+    if city=="Hong Kong":
         ax.set_ylabel('NDVI', fontsize=25, labelpad=20)
     else:
         ax.set_ylabel('')
-    if city=="Lagos":
+    if city=="Shenzhen":
         ax.set_xlabel('Proportion green area', fontsize=25, labelpad=400)
     else:
         ax.set_xlabel('')
@@ -200,11 +200,11 @@ for n, city in enumerate(cites_esao):
     ax.set_title(city, fontsize=25, weight='bold')
     ax.tick_params(axis='x', labelsize=15)
     ax.tick_params(axis='y', labelsize=15)
-    if city=="Durban eThekwini":
+    if city=="Melbourne":
         ax.set_ylabel('NDVI', fontsize=25, labelpad=20)
     else:
         ax.set_ylabel('')
-    if city=="Lagos":
+    if city=="Sydney":
         ax.set_xlabel('Proportion green area', fontsize=25, labelpad=400)
     else:
         ax.set_xlabel('')
@@ -263,12 +263,12 @@ for n, city in enumerate(cities_eur):
     ax.set_title(city, fontsize=25, weight='bold')
     ax.tick_params(axis='x', labelsize=18)
     ax.tick_params(axis='y', labelsize=18)
-    if city=="Durban eThekwini":
+    if city=="London":
         ax.set_ylabel('NDVI', fontsize=28, labelpad=20)
     else:
         ax.set_ylabel('')
-    if city=="Lagos":
-        ax.set_xlabel('Proportion green area', fontsize=28, labelpad=400)
+    if city=="Venice":
+        ax.set_xlabel('Proportion green area', fontsize=28, labelpad=20, loc="right")
     else:
         ax.set_xlabel('')
 
@@ -291,7 +291,7 @@ cites_latam=['Bogota', 'Buenos Aires', 'Curitiba', 'Guadalajara', 'Lima', 'Medel
 
 
 plt.figure(figsize=(25, 30))
-plt.subplots_adjust(hspace=0.2, top=.93, bottom=.05, left=.05, right=.95)
+plt.subplots_adjust(hspace=0.2, top=.93, bottom=.05, left=.10, right=.90)
 
 sns.set(style='white')
 
@@ -325,17 +325,17 @@ for n, city in enumerate(cites_latam):
     ax.set_title(city, fontsize=25, weight='bold')
     ax.tick_params(axis='x', labelsize=15)
     ax.tick_params(axis='y', labelsize=15)
-    if city=="Durban eThekwini":
-        ax.set_ylabel('NDVI', fontsize=25, labelpad=20)
+    if city=="Guadalajara":
+        ax.set_ylabel('NDVI', fontsize=25, labelpad=20, loc='bottom')
     else:
         ax.set_ylabel('')
-    if city=="Lagos":
-        ax.set_xlabel('Proportion green area', fontsize=25, labelpad=400)
+    if city=="Santiago":
+        ax.set_xlabel('Proportion green area', fontsize=25, labelpad=20)
     else:
         ax.set_xlabel('')
 
 #creates a color bar rectangle
-cax = fig.add_axes([0.85, 0.05, 0.03, 0.15])
+cax = fig.add_axes([0.92, 0.05, 0.03, 0.15])
 sm = plt.cm.ScalarMappable(cmap='viridis')
 cbar=fig.colorbar(sm, cax=cax)
 cbar.ax.set_ylabel('Kernel density', size=25, labelpad=20)
@@ -352,7 +352,7 @@ cities_na=['Austin', 'Boston', 'Chicago', 'Houston', 'Los Angeles', 'Miami', 'Mo
            'New Orleans', 'New York City', 'Philadelphia', 'Phoenix', 'Portland', 
            'San Francisco', 'Seattle', 'Toronto', 'Vancouver', 'Washington DC']
 
-plt.figure(figsize=(25, 30))
+plt.figure(figsize=(25, 32))
 plt.subplots_adjust(hspace=0.2, top=.93, bottom=.05, left=.05, right=.95)
 
 sns.set(style='white')
@@ -387,17 +387,17 @@ for n, city in enumerate(cities_na):
     ax.set_title(city, fontsize=25, weight='bold')
     ax.tick_params(axis='x', labelsize=15)
     ax.tick_params(axis='y', labelsize=15)
-    if city=="Durban eThekwini":
-        ax.set_ylabel('NDVI', fontsize=25, labelpad=20)
+    if city=="Montreal":
+        ax.set_ylabel('NDVI', fontsize=25, labelpad=20, loc='bottom')
     else:
         ax.set_ylabel('')
-    if city=="Lagos":
-        ax.set_xlabel('Proportion green area', fontsize=25, labelpad=400)
+    if city=="Washington DC":
+        ax.set_xlabel('Proportion green area', fontsize=25, labelpad=20)
     else:
         ax.set_xlabel('')
 
 #creates a color bar rectangle
-cax = fig.add_axes([0.85, 0.05, 0.03, 0.15])
+cax = fig.add_axes([0.85, 0.05, 0.03, 0.12])
 sm = plt.cm.ScalarMappable(cmap='viridis')
 cbar=fig.colorbar(sm, cax=cax)
 cbar.ax.set_ylabel('Kernel density', size=25, labelpad=20)
@@ -414,8 +414,8 @@ plt.clf()
 cities_swa=['Amman', 'Bengaluru', 'Chennai', 'Delhi NCT', 'Dhaka North and South', 
             'Dubai', 'Karachi', 'Kolkata', 'Mumbai']
 
-plt.figure(figsize=(25, 30))
-plt.subplots_adjust(hspace=0.2, top=.93, bottom=.05, left=.05, right=.95)
+plt.figure(figsize=(25, 25))
+plt.subplots_adjust(hspace=0.2, top=.93, bottom=.05, left=.10, right=.90)
 
 sns.set(style='white')
 
@@ -449,17 +449,17 @@ for n, city in enumerate(cities_swa):
     ax.set_title(city, fontsize=25, weight='bold')
     ax.tick_params(axis='x', labelsize=15)
     ax.tick_params(axis='y', labelsize=15)
-    if city=="Durban eThekwini":
+    if city=="Delhi NCT":
         ax.set_ylabel('NDVI', fontsize=25, labelpad=20)
     else:
         ax.set_ylabel('')
-    if city=="Lagos":
-        ax.set_xlabel('Proportion green area', fontsize=25, labelpad=400)
+    if city=="Kolkata":
+        ax.set_xlabel('Proportion green area', fontsize=25, labelpad=20)
     else:
         ax.set_xlabel('')
 
 #creates a color bar rectangle
-cax = fig.add_axes([0.85, 0.05, 0.03, 0.15])
+cax = fig.add_axes([0.92, 0.05, 0.03, 0.15])
 sm = plt.cm.ScalarMappable(cmap='viridis')
 cbar=fig.colorbar(sm, cax=cax)
 cbar.ax.set_ylabel('Kernel density', size=25, labelpad=20)
