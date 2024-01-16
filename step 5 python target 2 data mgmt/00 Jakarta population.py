@@ -25,7 +25,7 @@ c40=data_folder+'c40/t2_population/'
 ucdb=data_folder+'ucdb/t2_population/'
 
 #https://population.un.org/wpp/Download/Standard/Population/ 
-#avg of estimates for 20+ percentage of population
+#20+ percentage of population
 pct_adult=54.52968999/100
 
 #%% UCDB FILES
@@ -75,7 +75,7 @@ jakarta_adult_pop_ucdb.plot()
 plt.show() # show the plot in the ipython console
 
 #save as geotiff in correct folder
-#jakarta_adult_pop_ucdb.rio.to_raster(ucdb+"adult pop/Jakarta.tif")
+jakarta_adult_pop_ucdb.rio.to_raster(ucdb+"adult pop/Jakarta.tif")
 
 #%% C40 shapefiles
 #create an approximate adult pop file for Jakarta using age pyramid info from

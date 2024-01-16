@@ -51,6 +51,13 @@ c40_t2=pd.merge(left=target2, right=c40_smod_shapes, how='left', on='City')
 #turn data frame into a geo data frame so that it recognizes the geometry
 gdf = gpd.GeoDataFrame(c40_t2, geometry="centroid")
 
+regions=["Africa", "Central East Asia", "East, Southeast Asia & Oceania", "Europe", "Latin America", "North America", "South and West Asia"]
+colors=['plum', 'mediumaquamarine', 'salmon', 'steelblue', 'olivedrab', 'burlywood', 'palevioletred']
+color_dict=dict(zip(regions, colors))
+
+order=['Latin America', 'Central East Asia', 'Africa', 'South and West Asia', 'East, Southeast Asia & Oceania', 'Europe', 'North America']
+
+
 #%% make graph with .90 as threshold
 fig=plt.figure(figsize=(18, 12))
 plt.subplots_adjust(hspace=0.25)
